@@ -161,6 +161,22 @@ export default function Editor({ user }: { user: User }) {
     setData({ ...data, categories: newCategories });
   };
 
+  const addOption = (catIndex: number, qIndex: number) => {
+    const newCategories = [...data.categories];
+    const q = newCategories[catIndex].questions[qIndex];
+    if (q.options.length >= 5) return; // Limit to 5 options for layout sanity
+    q.options.push({ text: '', isCorrect: false });
+    setData({ ...data, categories: newCategories });
+  };
+
+  const removeOption = (catIndex: number, qIndex: number, optIndex: number) => {
+    const newCategories = [...data.categories];
+    const q = newCategories[catIndex].questions[qIndex];
+    if (q.options.length <= 2) return; // Minimum 2 options
+    q.options.splice(optIndex, 1);
+    setData({ ...data, categories: newCategories });
+  };
+
   if (loading) return <div className="p-10 text-center">Carregando...</div>;
 
   return (
@@ -332,7 +348,8 @@ export default function Editor({ user }: { user: User }) {
                             });
                             setData({ ...data, categories: newCats });
                           }}
-                          className={`rounded-full p-1 ${opt.isCorrect ? 'bg-emerald-500 text-slate-950' : 'bg-slate-800 text-slate-500'}`}
+                          className={`rounded-full p-1 transition-colors ${opt.isCorrect ? 'bg-emerald-500 text-slate-950' : 'bg-slate-800 text-slate-500 hover:text-slate-400'}`}
+                          title={opt.isCorrect ? "Alternativa Correta" : "Marcar como Correta"}
                         >
                           <CheckCircle2 className="h-4 w-4" />
                         </button>
@@ -347,9 +364,28 @@ export default function Editor({ user }: { user: User }) {
                           }}
                           className="flex-1 rounded-lg border border-slate-800 bg-slate-900 px-3 py-3 text-sm outline-none focus:border-amber-500/50"
                         />
+                        {q.options.length > 2 && (
+                          <button 
+                            onClick={() => removeOption(catIndex, qIndex, optIndex)}
+                            className="p-2 text-slate-600 hover:text-red-500"
+                            title="Remover Opção"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                        )}
                       </div>
                     ))}
                   </div>
+
+                  {q.options.length < 5 && (
+                    <button 
+                      onClick={() => addOption(catIndex, qIndex)}
+                      className="mt-4 flex items-center gap-2 text-xs font-bold text-slate-500 hover:text-amber-500"
+                    >
+                      <Plus className="h-3 w-3" />
+                      ADICIONAR ALTERNATIVA
+                    </button>
+                  )}
                 </div>
               ))}
               <button 
