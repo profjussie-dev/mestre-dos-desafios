@@ -81,7 +81,7 @@ export default function Home({ user }: { user: User | null }) {
 
       {/* Footer */}
       <footer className="border-t border-slate-900 py-12 text-center text-slate-500">
-        <p>© 2026 Mestre do Desafio. 100% gratuito para educadores.</p>
+        <p>© 2026 Mestre do Desafio por Prof. Me. Flávio Jussiê. 100% gratuito para educadores.</p>
       </footer>
     </div>
   );
