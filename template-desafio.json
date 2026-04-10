@@ -1,0 +1,25 @@
+{
+  "title": "NOME DO SEU DESAFIO AQUI",
+  "allowed_classes": ["6º Ano A", "6º Ano B"],
+  "data": {
+    "categories": [
+      {
+        "name": "NOME DA CATEGORIA 1",
+        "color": "#f59e0b",
+        "questions": [
+          {
+            "context": "Contexto opcional (ex: um pequeno texto ou dica)",
+            "question": "A pergunta que aparecerá na roleta?",
+            "options": [
+              { "text": "Resposta Correta", "isCorrect": true },
+              { "text": "Resposta Incorreta 1", "isCorrect": false },
+              { "text": "Resposta Incorreta 2", "isCorrect": false },
+              { "text": "Resposta Incorreta 3", "isCorrect": false }
+            ],
+            "explanation": "Explicação opcional que aparece após o aluno responder."
+          }
+        ]
+      }
+    ]
+  }
+}
