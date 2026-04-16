@@ -41,19 +41,19 @@ export default function Play() {
   }, []);
 
   useEffect(() => {
-    if (id) fetchLeaderboard();
+    if (id) fetchRoulette();
   }, [id]);
 
   const activeCategories = roulette?.data.categories.filter(cat => 
     cat.questions.some(q => !usedQuestionTexts.includes(q.question))
   ) || [];
 
-  const fetchLeaderboard = async () => {
-    if (!id) return;
+  const fetchLeaderboard = async (rouletteId: string) => {
+    if (!rouletteId) return;
     const { data } = await supabase
       .from('leaderboard')
       .select('*')
-      .eq('roulette_id', id)
+      .eq('roulette_id', rouletteId)
       .order('score', { ascending: false })
       .limit(10);
     if (data) setLeaderboard(data);
@@ -68,16 +68,16 @@ export default function Play() {
   };
 
   const saveScore = async (newTotal: number) => {
-    if (!id || !playerInfo) return;
+    if (!roulette || !playerInfo) return;
     await supabase
       .from('leaderboard')
       .upsert({
-        roulette_id: id,
+        roulette_id: roulette.id,
         player_name: playerInfo.name,
         player_class: playerInfo.class,
         score: newTotal,
       }, { onConflict: 'roulette_id, player_name, player_class' });
-    fetchLeaderboard();
+    fetchLeaderboard(roulette.id);
   };
 
   // Auto-save score on completion
@@ -102,9 +102,6 @@ export default function Play() {
     return () => clearInterval(interval);
   }, [currentQuestion, showResult, timeLeft]);
 
-  useEffect(() => {
-    if (id) fetchRoulette();
-  }, [id]);
 
   const fetchRoulette = async () => {
     let query = supabase.from('roulettes').select('*');
@@ -122,6 +119,7 @@ export default function Play() {
       setError('Desafio não encontrado ou expirado.');
     } else {
       setRoulette(roulette);
+      fetchLeaderboard(roulette.id);
     }
     setLoading(false);
   };
