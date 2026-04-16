@@ -273,51 +273,70 @@ export default function Play() {
   return (
     <div className="min-h-screen bg-slate-950 text-white selection:bg-amber-500/30">
       {/* Header */}
-      <header className="container mx-auto flex flex-col items-center justify-between gap-4 p-4 md:flex-row md:items-start md:p-6">
-        <div className="flex flex-col gap-3">
-          <div className="flex items-center gap-2 text-lg font-black tracking-tighter text-amber-500">
-            <Trophy className="h-6 w-6" />
-            <span className="max-w-[250px] truncate md:max-w-none">{roulette.title}</span>
+      <header className="sticky top-0 z-40 w-full border-b border-white/5 bg-slate-950/80 backdrop-blur-md">
+        <div className="container mx-auto px-4 py-3 md:px-6">
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex flex-col min-w-0">
+              <div className="flex items-center gap-2 text-sm font-black tracking-tighter text-amber-500 md:text-lg">
+                <Trophy className="h-4 w-4 shrink-0 md:h-5 md:w-5" />
+                <span className="truncate">{roulette.title}</span>
+              </div>
+            </div>
+
+            <div className="shrink-0">
+              <div className="flex items-center gap-1.5 rounded-full bg-slate-900 px-3 py-1 text-[10px] font-black border border-slate-800 shadow-lg ring-1 ring-white/5 md:px-4 md:py-1.5">
+                <span className="text-slate-500 uppercase tracking-widest text-[8px] md:text-[9px]">PONTOS:</span>
+                <span className="text-amber-500 font-black">{score}</span>
+              </div>
+            </div>
           </div>
 
-          {/* Compact Ranking List */}
-          <div className="flex flex-col gap-2">
-            <div className="flex items-center gap-2 px-1 text-[10px] font-bold uppercase tracking-widest text-slate-500">
-              <Crown className="h-3 w-3" />
-              TOP 10 RANKING
+          {/* Ranking Row */}
+          <div className="mt-3 flex flex-col gap-1.5">
+            <div className="flex items-center gap-1.5 px-0.5 text-[8px] font-bold uppercase tracking-[0.2em] text-slate-500">
+              <Crown className="h-2.5 w-2.5" />
+              TOP 10 LÍDERES
             </div>
-            <div className="flex overflow-x-auto pb-2 gap-2 hide-scrollbar md:flex-col md:overflow-visible">
-              {leaderboard.length === 0 ? (
-                <div className="rounded-full border border-slate-900 bg-slate-900/30 px-4 py-1.5 text-[10px] text-slate-600 italic">
-                  Nenhum registro ainda...
-                </div>
-              ) : (
-                leaderboard.map((entry, idx) => (
-                  <div 
-                    key={idx}
-                    className={`flex shrink-0 items-center justify-between gap-3 rounded-full border px-4 py-1.5 shadow-sm transition-all md:shrink ${
-                      idx === 0 
-                        ? 'border-amber-500/50 bg-amber-500/10 text-amber-500 shadow-amber-500/5' 
-                        : 'border-slate-800 bg-slate-900/50 text-slate-300'
-                    }`}
-                  >
-                    <div className="flex items-center gap-2 whitespace-nowrap text-[11px] font-bold">
-                      {idx === 0 && <Crown className="h-3 w-3 fill-amber-500" />}
-                      <span className="opacity-50">#{idx + 1}</span>
-                      <span className="truncate max-w-[80px] md:max-w-[120px]">{entry.player_name}</span>
-                      <span className="text-[9px] opacity-40">— {entry.player_class}</span>
-                    </div>
-                    <div className="text-[11px] font-black">{entry.score}</div>
+            
+            <div className="relative -mx-4 overflow-hidden md:mx-0">
+              {/* Fade masks for better scroll indication */}
+              <div className="pointer-events-none absolute left-0 top-0 z-10 h-full w-8 bg-gradient-to-r from-slate-950 to-transparent md:hidden"></div>
+              <div className="pointer-events-none absolute right-0 top-0 z-10 h-full w-8 bg-gradient-to-l from-slate-950 to-transparent md:hidden"></div>
+              
+              <div className="flex overflow-x-auto px-4 pb-1.5 gap-2 hide-scrollbar md:flex-col md:px-0 md:overflow-visible">
+                {leaderboard.length === 0 ? (
+                  <div className="rounded-full border border-slate-900 bg-slate-900/30 px-3 py-1 text-[9px] text-slate-600 italic">
+                    Nenhum registro ainda...
                   </div>
-                ))
-              )}
+                ) : (
+                  leaderboard.map((entry, idx) => {
+                    const isTop3 = idx < 3;
+                    const rankColors = [
+                      'border-amber-400/50 bg-amber-400/10 text-amber-400 shadow-amber-400/5', // Gold
+                      'border-slate-300/50 bg-slate-300/10 text-slate-200 shadow-slate-300/5', // Silver
+                      'border-orange-500/50 bg-orange-500/10 text-orange-400 shadow-orange-500/5' // Bronze
+                    ];
+                    
+                    return (
+                      <div 
+                        key={idx}
+                        className={`flex shrink-0 items-center justify-between gap-3 rounded-full border px-3 py-1 shadow-sm transition-all md:shrink ${
+                          isTop3 ? rankColors[idx] : 'border-slate-800 bg-slate-900/50 text-slate-400'
+                        }`}
+                      >
+                        <div className="flex items-center gap-1.5 whitespace-nowrap text-[10px] font-bold">
+                          {idx === 0 && <Crown className="h-3 w-3 fill-amber-400" />}
+                          <span className="opacity-40">#{idx + 1}</span>
+                          <span className="truncate max-w-[70px] md:max-w-[120px] font-black">{entry.player_name}</span>
+                          <span className="text-[8px] opacity-40">— {entry.player_class}</span>
+                        </div>
+                        <div className="text-[10px] font-black tabular-nums">{entry.score}</div>
+                      </div>
+                    );
+                  })
+                )}
+              </div>
             </div>
-          </div>
-        </div>
-
-        <div className="flex flex-col items-center gap-1 md:items-end">
-          <div className="rounded-full bg-slate-900 px-5 py-1.5 text-[10px] font-black border border-slate-800 shadow-xl ring-2 ring-amber-500/20">
-            PONTUAÇÃO: <span className="text-amber-500 ml-1 font-black">{score}</span>
           </div>
         </div>
       </header>
@@ -346,14 +365,19 @@ export default function Play() {
               {/* Category Labels */}
               {activeCategories.map((cat, i, arr) => {
                 const angle = (i * 360) / arr.length + (360 / arr.length) / 2;
+                // Scale font size based on text length to improve legibility
+                const fontSize = cat.name.length > 20 ? '8px' : cat.name.length > 15 ? '9px' : '10px';
+                
                 return (
                   <div 
                     key={`${cat.name}-${i}`}
-                    className="absolute left-1/2 top-1/2 text-center text-[9px] font-black uppercase tracking-tighter text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] md:text-lg [--label-offset:-70px] md:[--label-offset:-150px]"
+                    className="absolute left-1/2 top-1/2 text-center font-black uppercase tracking-tighter text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] md:text-lg [--label-offset:-72px] md:[--label-offset:-150px]"
                     style={{ 
                       transform: `translate(-50%, -50%) rotate(${angle}deg) translateY(var(--label-offset))`,
-                      width: '180px',
-                      lineHeight: '1.2'
+                      width: '140px',
+                      fontSize: `var(--font-size, ${fontSize})`,
+                      lineHeight: '1',
+                      textWrap: 'balance'
                     }}
                   >
                     {cat.name}
@@ -363,7 +387,9 @@ export default function Play() {
             </div>
 
             {/* Center Spindle */}
-            <div className="absolute left-1/2 top-1/2 z-10 h-10 w-10 -translate-x-1/2 -translate-y-1/2 rounded-full border-[3px] border-slate-900 bg-white shadow-xl md:h-14 md:w-14"></div>
+            <div className="absolute left-1/2 top-1/2 z-10 h-10 w-10 -translate-x-1/2 -translate-y-1/2 rounded-full border-[3px] border-slate-900 bg-gradient-to-br from-white via-slate-100 to-slate-300 shadow-[0_0_20px_rgba(255,255,255,0.2),inset_0_2px_5px_rgba(0,0,0,0.2)] md:h-14 md:w-14">
+              <div className="absolute inset-2 rounded-full border border-slate-400/20 opacity-50"></div>
+            </div>
           </div>
         </div>
 
@@ -372,7 +398,7 @@ export default function Play() {
             <button 
               onClick={spin}
               disabled={isSpinning || !!currentQuestion}
-              className="w-full rounded-3xl bg-amber-500 py-2.5 text-sm font-black uppercase tracking-widest text-slate-950 shadow-[0_4px_0_rgb(180,110,0)] transition-all hover:scale-[1.02] active:translate-y-1 active:scale-95 active:shadow-none disabled:opacity-50 disabled:cursor-not-allowed md:py-3.5 md:text-lg"
+              className="w-full rounded-2xl bg-gradient-to-b from-amber-400 to-amber-600 py-3 text-sm font-black uppercase tracking-widest text-slate-950 shadow-[0_4px_0_rgb(146,84,0)] transition-all hover:from-amber-350 hover:to-amber-550 active:translate-y-1 active:scale-95 active:shadow-none disabled:opacity-50 disabled:cursor-not-allowed md:rounded-3xl md:py-3.5 md:text-lg"
             >
               {isSpinning ? 'SORTEANDO...' : 'SORTEAR'}
             </button>
