@@ -371,13 +371,17 @@ export default function Play() {
                 return (
                   <div 
                     key={`${cat.name}-${i}`}
-                    className="absolute left-1/2 top-1/2 text-center font-black uppercase tracking-tighter text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] md:text-lg [--label-offset:-72px] md:[--label-offset:-150px]"
+                    className="absolute left-1/2 top-1/2 text-center font-black uppercase tracking-tighter text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] md:text-lg [--label-offset:-76px] md:[--label-offset:-150px]"
                     style={{ 
                       transform: `translate(-50%, -50%) rotate(${angle}deg) translateY(var(--label-offset))`,
-                      width: '140px',
+                      width: '110px',
                       fontSize: `var(--font-size, ${fontSize})`,
-                      lineHeight: '1',
-                      textWrap: 'balance'
+                      lineHeight: '1.1',
+                      textWrap: 'balance',
+                      wordBreak: 'break-word',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center'
                     }}
                   >
                     {cat.name}
